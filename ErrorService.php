@@ -20,7 +20,7 @@ class ErrorService
         'bot_list' => array(),
         'ignore404' => false,
         'ignoreBot404' => false,
-        'ignorable_exceptions' => array(),
+        'ignorable_exceptions' => array('ErrorException'),
     );
 
     public $errors = array();
@@ -74,11 +74,11 @@ class ErrorService
             return;
         }
 
-        if ($this->ignoreBot404() && $this->isBotRequest() && !$this->hasOnlyIgnorableExceptions()) { //Do not send router-no-match errors with bot-requests to e-mails
+        if ($this->ignoreBot404() && $this->isBotRequest() && $this->hasOnlyIgnorableExceptions()) { //Do not send router-no-match errors with bot-requests to e-mails
             return;
         }
 
-        if ($this->ignore404() && !$this->hasOnlyIgnorableExceptions()) { //Ignore normal user 404 requests
+        if ($this->ignore404() && $this->hasOnlyIgnorableExceptions()) { //Ignore normal user 404 requests
             return;
         }
 
@@ -129,9 +129,12 @@ class ErrorService
 
     protected function hasOnlyIgnorableExceptions()
     {
+        if(!isset($this->config['ignorable_exceptions']) or count($this->config['ignorable_exceptions']) == 0){
+            return false;
+        }
         $ignorables = $this->config['ignorable_exceptions'];
-
         foreach ($this->errors as $error) {
+
             foreach($ignorables as $ignorable){
                 if(!($error instanceof $ignorable)){
                     return false;
