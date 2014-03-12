@@ -6,10 +6,10 @@
  * Time: 10:05 PM
  */
 /*
-$errorService = new ErrorService($configArray());
-$errorService->startErrorHandling();
+ * Usage:
+*$errorService = new ErrorService($configArray());
+*$errorService->startErrorHandling();
 */
-
 class ErrorService
 {
 
@@ -44,13 +44,9 @@ class ErrorService
     {
         //$this->validateConfiguration();
         $this->startTime = microtime(true);
-
         // E_ALL & ~E_STRICT
         // set_error_handler(array($this, 'addPhpError'), E_ALL );
-
         set_error_handler(array($this, 'addPhpError'));
-
-
         register_shutdown_function(array($this, 'endErrorHandlingWithFatal'));
     }
 
@@ -167,8 +163,20 @@ class ErrorService
 
     public function getErrorReportMetaDataArray(){
 
+        $errors = array();
+        foreach($this->errors as $errorException){
+            $error = array();
+            $error['title'] = $errorException->getMessage();
+            $error['class'] = get_class($errorException);
+            $error['tracing'] = trim(ucfirst(nl2br($errorException->getTraceAsString())));
+            if (method_exists($errorException, 'getSeverity')){
+                $error['severity'] = $errorException->getSeverity();
+            }
+            $errors[] = $error;
+        }
+
         return array(
-            'errors' => $this->errors,
+            'errors' => $errors,
             'meta' => array(
                 'ip' => $this->getIp(),
                 'userAgent' => (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : null,
@@ -184,9 +192,6 @@ class ErrorService
 
     protected function composeAndSendErrorMail()
     {
-
-
-
         $data = json_encode($this->getErrorReportMetaDataArray());
         $to = implode(',',$this->config['emails']);
         mail($to,$this->config['subject'],$data,"From: ".$this->config['from_address']."\n");
