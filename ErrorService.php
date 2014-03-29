@@ -5,11 +5,7 @@
  * Date: 3/5/14
  * Time: 10:05 PM
  */
-/*
- * Usage:
-*$errorService = new ErrorService($configArray());
-*$errorService->startErrorHandling();
-*/
+
 class ErrorService
 {
 
