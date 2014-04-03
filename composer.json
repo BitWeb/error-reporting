@@ -18,7 +18,8 @@
         }
     ],
     "require": {
-        "bitweb/stdlib": "dev-master"
+        "bitweb/stdlib": "dev-master",
+        "zendframework/zend-view": "2.3.*"
     },
     "autoload": {
         "psr-0": {

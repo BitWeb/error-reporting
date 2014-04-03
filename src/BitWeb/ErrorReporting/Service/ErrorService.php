@@ -11,6 +11,9 @@ use BitWeb\ErrorReporting\Error;
 use BitWeb\ErrorReporting\ErrorInfo;
 use BitWeb\ErrorReporting\ErrorMeta;
 use BitWeb\Stdlib\Ip;
+use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\PhpRenderer;
+use Zend\View\Resolver\TemplateMapResolver;
 
 class ErrorService
 {
@@ -164,7 +167,7 @@ class ErrorService
         $meta = new ErrorMeta();
         $meta->setIp(Ip::getClientIp());
         $meta->setUserAgent((isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : null);
-        $meta->setUrl($_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
+        $meta->setUrl(((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
         $meta->setPostData($_POST);
         $meta->setGetData($_GET);
         $meta->setSessionData(isset($_SESSION) ? $_SESSION : null);
@@ -178,8 +181,22 @@ class ErrorService
 
     protected function composeAndSendErrorMail()
     {
-        $data = serialize($this->getErrorReportMetaData());
+        $viewModel = new ViewModel([
+            'error' => $this->getErrorReportMetaData()
+        ]);
+        $viewModel->setTemplate('mail/errors');
+        $renderer = new PhpRenderer();
+        $renderer->setResolver(new TemplateMapResolver([
+            'mail/errors' => __DIR__ . '/../../../../view/mail/errors.phtml'
+        ]));
+        $renderedView = $renderer->render($viewModel);
+
         $to = implode(',', $this->config['emails']);
-        mail($to, $this->config['subject'], $data, "From: " . $this->config['from_address'] . "\n");
+
+        $headers = "From: " . $this->config['from_address'] . "\n";
+        $headers .= "MIME-Version: 1.0" . "\n";
+        $headers .= "Content-type:text/html;charset=UTF-8" . "\n";
+
+        mail($to, $this->config['subject'], $renderedView, $headers);
     }
 }
