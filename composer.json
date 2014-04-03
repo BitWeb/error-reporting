@@ -1,0 +1,25 @@
+{
+    "name": "bitweb/error-reporting",
+    "description": "BitWeb extension for sending errors to email.",
+    "license": "proprietary",
+    "homepage": "http://bitweb.ee/",
+    "authors": [
+        {
+            "name": "Priit Rand",
+            "email": "priit@bitweb.ee"
+        },
+        {
+            "name": "Erich Jagomägis",
+            "email": "erich@bitweb.ee"
+        },
+        {
+            "name": "Rain Ramm",
+            "email": "rain@bitweb.ee"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "": ["src/"]
+        }
+    }
+}

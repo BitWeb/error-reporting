@@ -5,6 +5,7 @@
  * Date: 3/5/14
  * Time: 10:05 PM
  */
+namespace BitWeb\ErrorReporting\Service;
 
 class ErrorService
 {
@@ -66,7 +67,7 @@ class ErrorService
         if (empty($this->errors)) {
             return; //No errors, do nothing
         }
-        if ($this->hasReceiverEmails() == null) {//If mail sending is disabled
+        if ($this->hasReceiverEmails() == null) { //If mail sending is disabled
             return;
         }
 
@@ -96,7 +97,7 @@ class ErrorService
 
     public function ignoreBot404()
     {
-        if(isset($this->config['ignoreBot404']) && $this->config['ignoreBot404']) {
+        if (isset($this->config['ignoreBot404']) && $this->config['ignoreBot404']) {
             return false;
         }
         return true;
@@ -104,7 +105,7 @@ class ErrorService
 
     public function ignore404()
     {
-        if(isset($this->config['ignore404']) && $this->config['ignore404']) {
+        if (isset($this->config['ignore404']) && $this->config['ignore404']) {
             return false;
         }
         return true;
@@ -125,14 +126,14 @@ class ErrorService
 
     protected function hasOnlyIgnorableExceptions()
     {
-        if(!isset($this->config['ignorable_exceptions']) or count($this->config['ignorable_exceptions']) == 0){
+        if (!isset($this->config['ignorable_exceptions']) or count($this->config['ignorable_exceptions']) == 0) {
             return false;
         }
         $ignorables = $this->config['ignorable_exceptions'];
         foreach ($this->errors as $error) {
 
-            foreach($ignorables as $ignorable){
-                if(!($error instanceof $ignorable)){
+            foreach ($ignorables as $ignorable) {
+                if (!($error instanceof $ignorable)) {
                     return false;
                 }
             }
@@ -160,15 +161,16 @@ class ErrorService
         return $ip;
     }
 
-    public function getErrorReportMetaDataArray(){
+    public function getErrorReportMetaDataArray()
+    {
 
         $errors = array();
-        foreach($this->errors as $errorException){
+        foreach ($this->errors as $errorException) {
             $error = array();
             $error['title'] = $errorException->getMessage();
             $error['class'] = get_class($errorException);
             $error['tracing'] = trim(ucfirst(nl2br($errorException->getTraceAsString())));
-            if (method_exists($errorException, 'getSeverity')){
+            if (method_exists($errorException, 'getSeverity')) {
                 $error['severity'] = $errorException->getSeverity();
             }
             $errors[] = $error;
@@ -192,7 +194,7 @@ class ErrorService
     protected function composeAndSendErrorMail()
     {
         $data = json_encode($this->getErrorReportMetaDataArray());
-        $to = implode(',',$this->config['emails']);
-        mail($to,$this->config['subject'],$data,"From: ".$this->config['from_address']."\n");
+        $to = implode(',', $this->config['emails']);
+        mail($to, $this->config['subject'], $data, "From: " . $this->config['from_address'] . "\n");
     }
 }
