@@ -17,6 +17,9 @@
             "email": "rain@bitweb.ee"
         }
     ],
+    "require": {
+        "bitweb/stdlib": "dev-master"
+    },
     "autoload": {
         "psr-0": {
             "": ["src/"]

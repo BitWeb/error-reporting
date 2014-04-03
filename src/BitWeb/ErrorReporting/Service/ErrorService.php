@@ -10,6 +10,7 @@ namespace BitWeb\ErrorReporting\Service;
 use BitWeb\ErrorReporting\Error;
 use BitWeb\ErrorReporting\ErrorInfo;
 use BitWeb\ErrorReporting\ErrorMeta;
+use BitWeb\Stdlib\Ip;
 
 class ErrorService
 {
@@ -41,13 +42,10 @@ class ErrorService
         $this->config = $config;
     }
 
-    public function startErrorHandling()
+    public function startErrorHandling($startTime = null)
     {
-        //$this->validateConfiguration();
-        $this->startTime = microtime(true);
-        // E_ALL & ~E_STRICT
-        // set_error_handler(array($this, 'addPhpError'), E_ALL );
-        set_error_handler(array($this, 'addPhpError'));
+        $this->startTime = $startTime !== null ? $startTime : microtime(true);
+        set_error_handler(array($this, 'addPhpError'), E_ALL);
         register_shutdown_function(array($this, 'endErrorHandlingWithFatal'));
     }
 
@@ -133,10 +131,10 @@ class ErrorService
         if (!isset($this->config['ignorable_exceptions']) or count($this->config['ignorable_exceptions']) == 0) {
             return false;
         }
-        $ignorables = $this->config['ignorable_exceptions'];
+        $ignorableExceptions = $this->config['ignorable_exceptions'];
         foreach ($this->errors as $error) {
 
-            foreach ($ignorables as $ignorable) {
+            foreach ($ignorableExceptions as $ignorable) {
                 if (!($error instanceof $ignorable)) {
                     return false;
                 }
@@ -150,27 +148,13 @@ class ErrorService
         restore_error_handler();
     }
 
-    protected function getIp()
-    {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        } else {
-            $ip = $this->config['default-ip'];
-        }
-
-        return $ip;
-    }
-
     public function getErrorReportMetaData()
     {
         $errors = array();
         /** @var $errorException \Exception */
         foreach ($this->errors as $errorException) {
-            $errors[] = new ErrorInfo(get_class($errorException),
+            $errors[] = new ErrorInfo(
+                get_class($errorException),
                 $errorException->getMessage(),
                 trim(ucfirst(nl2br($errorException->getTraceAsString()))),
                 method_exists($errorException, 'getSeverity') ? $errorException->getSeverity() : null
@@ -178,9 +162,9 @@ class ErrorService
         }
 
         $meta = new ErrorMeta();
-        $meta->setIp($this->getIp());
+        $meta->setIp(Ip::getClientIp());
         $meta->setUserAgent((isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : null);
-        $meta->setUrl($_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . $_SERVER['PHP_SELF']);
+        $meta->setUrl($_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
         $meta->setPostData($_POST);
         $meta->setGetData($_GET);
         $meta->setSessionData(isset($_SESSION) ? $_SESSION : null);
@@ -194,7 +178,7 @@ class ErrorService
 
     protected function composeAndSendErrorMail()
     {
-        $data = json_encode($this->getErrorReportMetaData());
+        $data = serialize($this->getErrorReportMetaData());
         $to = implode(',', $this->config['emails']);
         mail($to, $this->config['subject'], $data, "From: " . $this->config['from_address'] . "\n");
     }
