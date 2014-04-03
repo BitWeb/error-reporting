@@ -7,6 +7,10 @@
  */
 namespace BitWeb\ErrorReporting\Service;
 
+use BitWeb\ErrorReporting\Error;
+use BitWeb\ErrorReporting\ErrorInfo;
+use BitWeb\ErrorReporting\ErrorMeta;
+
 class ErrorService
 {
 
@@ -161,39 +165,36 @@ class ErrorService
         return $ip;
     }
 
-    public function getErrorReportMetaDataArray()
+    public function getErrorReportMetaData()
     {
-
         $errors = array();
+        /** @var $errorException \Exception */
         foreach ($this->errors as $errorException) {
-            $error = array();
-            $error['title'] = $errorException->getMessage();
-            $error['class'] = get_class($errorException);
-            $error['tracing'] = trim(ucfirst(nl2br($errorException->getTraceAsString())));
-            if (method_exists($errorException, 'getSeverity')) {
-                $error['severity'] = $errorException->getSeverity();
-            }
-            $errors[] = $error;
+            $errors[] = new ErrorInfo(get_class($errorException),
+                $errorException->getMessage(),
+                trim(ucfirst(nl2br($errorException->getTraceAsString()))),
+                method_exists($errorException, 'getSeverity') ? $errorException->getSeverity() : null
+            );
         }
 
-        return array(
-            'errors' => $errors,
-            'meta' => array(
-                'ip' => $this->getIp(),
-                'userAgent' => (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : null,
-                'url' => $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . $_SERVER['PHP_SELF'],
-                'postData' => $_POST,
-                'getData' => $_GET,
-                'sessionData' => $_SESSION,
-                'referer' => (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : null,
-                'requestTime' => date('d.m.Y H:i:s'),
-                'requestDuration' => microtime(true) - $this->startTime,
-            ));
+        $meta = new ErrorMeta();
+        $meta->setIp($this->getIp());
+        $meta->setUserAgent((isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : null);
+        $meta->setUrl($_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . $_SERVER['PHP_SELF']);
+        $meta->setPostData($_POST);
+        $meta->setGetData($_GET);
+        $meta->setSessionData(isset($_SESSION) ? $_SESSION : null);
+        $meta->setServerData($_SERVER);
+        $meta->setReferrer((isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : null);
+        $meta->setRequestTime(new \DateTime());
+        $meta->setRequestDuration(microtime(true) - $this->startTime);
+
+        return new Error($errors, $meta);
     }
 
     protected function composeAndSendErrorMail()
     {
-        $data = json_encode($this->getErrorReportMetaDataArray());
+        $data = json_encode($this->getErrorReportMetaData());
         $to = implode(',', $this->config['emails']);
         mail($to, $this->config['subject'], $data, "From: " . $this->config['from_address'] . "\n");
     }
