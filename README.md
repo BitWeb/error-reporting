@@ -22,6 +22,7 @@ $errorService = new \BitWeb\ErrorReporting\Service\ErrorService(array(
         'YandexBot',
     ),
 ));
+$errorService->startErrorHandling();
 ```
 Add this to the last line of your index.php
 ```php
