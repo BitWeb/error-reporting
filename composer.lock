@@ -3,20 +3,20 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1a00c898cdbb5ca054348a22603db807",
+    "hash": "2ed4485fd471e359d2cfa34292e88afe",
     "packages": [
         {
             "name": "bitweb/stdlib",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BitWeb/stdlib.git",
-                "reference": "088c3164837117a6042b6e03f37e5faa758bbc29"
+                "reference": "536a75d621819dde53d71d8e8eba9b0f443a7f6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BitWeb/stdlib/zipball/088c3164837117a6042b6e03f37e5faa758bbc29",
-                "reference": "088c3164837117a6042b6e03f37e5faa758bbc29",
+                "url": "https://api.github.com/repos/BitWeb/stdlib/zipball/536a75d621819dde53d71d8e8eba9b0f443a7f6e",
+                "reference": "536a75d621819dde53d71d8e8eba9b0f443a7f6e",
                 "shasum": ""
             },
             "require": {
@@ -40,7 +40,7 @@
             ],
             "description": "BitWeb library for standard functions.",
             "homepage": "http://bitweb.ee/",
-            "time": "2014-03-13 22:42:53"
+            "time": "2014-03-13 22:13:45"
         },
         {
             "name": "zendframework/zend-eventmanager",
@@ -255,9 +255,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "bitweb/stdlib": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": [
 
     ],
