@@ -22,7 +22,7 @@ class ErrorService
         'emails' => array(),
         'subject' => 'Errors',
         'from_address' => '',
-        'bot_list' => array(),
+        'botList' => array(),
         'ignore404' => false,
         'ignoreBot404' => false,
         'ignorable_exceptions' => array('ErrorException'),
