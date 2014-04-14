@@ -18,29 +18,29 @@ use Zend\View\Resolver\TemplateMapResolver;
 class ErrorService
 {
 
-    protected $config = array(
-        'emails' => array(),
+    protected $config = [
+        'emails' => [],
         'subject' => 'Errors',
         'from_address' => '',
-        'botList' => array(),
+        'botList' => [],
         'ignore404' => false,
         'ignoreBot404' => false,
-        'ignorable_exceptions' => array('ErrorException'),
-    );
+        'ignorable_exceptions' => ['ErrorException'],
+    ];
 
-    public $errors = array();
+    public $errors = [];
     protected $startTime = null;
 
     protected static $errorException;
 
-    public function __construct(array $config = array())
+    public function __construct(array $config = [])
     {
         if (count($config) > 0) {
             $this->setConfig($config);
         }
     }
 
-    public function setConfig($config = array())
+    public function setConfig(array $config = [])
     {
         $this->config = $config;
     }
@@ -48,8 +48,8 @@ class ErrorService
     public function startErrorHandling($startTime = null)
     {
         $this->startTime = $startTime !== null ? $startTime : microtime(true);
-        set_error_handler(array($this, 'addPhpError'), E_ALL);
-        register_shutdown_function(array($this, 'endErrorHandlingWithFatal'));
+        set_error_handler([$this, 'addPhpError'], E_ALL);
+        register_shutdown_function([$this, 'endErrorHandlingWithFatal']);
     }
 
     public function addPhpError($errorLevel, $errorMessage, $errorFile, $errorLine)
@@ -86,7 +86,7 @@ class ErrorService
 
         $this->composeAndSendErrorMail();
         $this->startTime = null;
-        $this->errors = array();
+        $this->errors = [];
     }
 
     public function hasReceiverEmails()
@@ -153,7 +153,7 @@ class ErrorService
 
     public function getErrorReportMetaData()
     {
-        $errors = array();
+        $errors = [];
         /** @var $errorException \Exception */
         foreach ($this->errors as $errorException) {
             $errors[] = new ErrorInfo(
