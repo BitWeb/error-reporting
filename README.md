@@ -10,7 +10,7 @@ $errorService = new \BitWeb\ErrorReporting\Service\ErrorService(array(
     'emails' => array (
         'you@domain.com'
     ),
-    'from_address' => 'you@domian.com',
+    'from_address' => 'you@domain.com',
     'ignore404' => false,
     'ignoreBot404' => false,
     'botList' => array(
