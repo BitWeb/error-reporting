@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "bitweb/stdlib": "1.0.*",
+        "bitweb/stdlib": "~1.0",
         "zendframework/zend-view": "~2.2"
     },
     "autoload": {
