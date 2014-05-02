@@ -21,9 +21,12 @@
         "bitweb/stdlib": "~1.0",
         "zendframework/zend-view": "~2.2"
     },
+    "require-dev": {
+        "phpunit/PHPUnit": "3.7.*"
+    },
     "autoload": {
         "psr-0": {
-            "": ["src/"]
+            "": ["src/", "test/"]
         }
     }
 }
