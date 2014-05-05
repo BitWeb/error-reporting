@@ -7,6 +7,7 @@
  */
 namespace BitWeb\ErrorReporting\Service;
 
+use BitWeb\ErrorReporting\Configuration;
 use BitWeb\ErrorReporting\Error;
 use BitWeb\ErrorReporting\ErrorInfo;
 use BitWeb\ErrorReporting\ErrorMeta;
@@ -18,31 +19,24 @@ use Zend\View\Resolver\TemplateMapResolver;
 class ErrorService
 {
 
-    protected $config = [
-        'emails' => [],
-        'subject' => 'Errors',
-        'from_address' => '',
-        'botList' => [],
-        'ignore404' => false,
-        'ignoreBot404' => false,
-        'ignorable_exceptions' => ['ErrorException'],
-    ];
+    /**
+     * @var Configuration
+     */
+    protected $configuration = null;
 
     public $errors = [];
     protected $startTime = null;
 
     protected static $errorException;
 
-    public function __construct(array $config = [])
+    public function __construct(Configuration $configuration)
     {
-        if (count($config) > 0) {
-            $this->setConfig($config);
-        }
+            $this->setConfig($configuration);
     }
 
-    public function setConfig(array $config = [])
+    public function setConfig(Configuration $configuration)
     {
-        $this->config = $config;
+        $this->configuration = $configuration;
     }
 
     public function startErrorHandling($startTime = null)
@@ -91,10 +85,7 @@ class ErrorService
 
     public function hasReceiverEmails()
     {
-        if (!isset($this->config['emails'])) {
-            return false;
-        }
-        if (count($this->config['emails']) == 0) {
+        if ($this->configuration->getEmails() == null) {
             return false;
         }
         return true;
@@ -102,7 +93,7 @@ class ErrorService
 
     public function ignoreBot404()
     {
-        if (isset($this->config['ignoreBot404']) && $this->config['ignoreBot404']) {
+        if ($this->configuration->getIgnoreBot404() !== null) {
             return false;
         }
         return true;
@@ -110,7 +101,7 @@ class ErrorService
 
     public function ignore404()
     {
-        if (isset($this->config['ignore404']) && $this->config['ignore404']) {
+        if ($this->configuration->getIgnore404() !== null) {
             return false;
         }
         return true;
@@ -119,7 +110,7 @@ class ErrorService
     public function isBotRequest()
     {
         $httpUserAgent = $_SERVER['HTTP_USER_AGENT'];
-        $botList = $this->config['bot_list'];
+        $botList = $this->configuration->getBotList();
 
         foreach ($botList as $bot) {
             if (stripos($httpUserAgent, $bot) !== false) {
@@ -131,10 +122,10 @@ class ErrorService
 
     protected function hasOnlyIgnorableExceptions()
     {
-        if (!isset($this->config['ignorable_exceptions']) or count($this->config['ignorable_exceptions']) == 0) {
+        if ($this->configuration->getIgnorableExceptions() == null) {
             return false;
         }
-        $ignorableExceptions = $this->config['ignorable_exceptions'];
+        $ignorableExceptions = $this->configuration->getIgnorableExceptions();
         foreach ($this->errors as $error) {
 
             foreach ($ignorableExceptions as $ignorable) {
@@ -191,12 +182,12 @@ class ErrorService
         ]));
         $renderedView = $renderer->render($viewModel);
 
-        $to = implode(',', $this->config['emails']);
+        $to = implode(',', $this->configuration->getEmails());
 
-        $headers = "From: " . $this->config['from_address'] . "\n";
+        $headers = "From: " . $this->configuration->getFromAddress() . "\n";
         $headers .= "MIME-Version: 1.0" . "\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\n";
 
-        mail($to, $this->config['subject'], $renderedView, $headers);
+        mail($to, $this->configuration->getSubject(), $renderedView, $headers);
     }
 }
