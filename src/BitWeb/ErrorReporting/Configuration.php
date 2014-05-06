@@ -8,17 +8,18 @@ use BitWeb\Stdlib\AbstractConfiguration;
 
 class Configuration extends AbstractConfiguration
 {
-    protected $emails;
-    protected $subject;
-    protected $fromAddress;
-    protected $botList;
-    protected $ignore404;
-    protected $ignoreBot404;
-    protected $ignorableExceptions;
+    protected $emails = array();
+    protected $subject = 'Errors';
+    protected $fromAddress = '';
+    protected $botList = array();
+    protected $ignore404 = false;
+    protected $ignoreBot404 = false;
+    protected $ignorableExceptions = array('ErrorException');
 
 
     /**
-     * @param mixed $botList
+     * Defines bots.
+     * @var array $botList
      */
     public function setBotList(array $botList)
     {
@@ -26,7 +27,8 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     * @return mixed
+     *
+     * @return array
      */
     public function getBotList()
     {
@@ -34,7 +36,8 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     * @param array $emails
+     * An array of emails the error report is sent to.
+     * @var array $emails
      */
     public function setEmails(array $emails)
     {
@@ -50,7 +53,8 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     * @param mixed $fromAddress
+     * Address where the message is sent from.
+     * @var String $fromAddress
      */
     public function setFromAddress($fromAddress)
     {
@@ -58,7 +62,7 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getFromAddress()
     {
@@ -66,7 +70,8 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     * @param array $ignorableExceptions
+     * Exceptions to ignore.
+     * @var array $ignorableExceptions
      */
     public function setIgnorableExceptions(array $ignorableExceptions)
     {
@@ -74,7 +79,7 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getIgnorableExceptions()
     {
@@ -82,15 +87,16 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     * @param mixed $ignore404
+     * Are 404 errors ignored?
+     * @var boolean $ignore404
      */
-    public function setIgnore404($ignore404)
+    public function setIgnore404(boolean $ignore404 = false)
     {
         $this->ignore404 = $ignore404;
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
     public function getIgnore404()
     {
@@ -98,15 +104,16 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     * @param mixed $ignoreBot404
+     * Are bot 404 errors ignored?
+     * @var boolean $ignoreBot404
      */
-    public function setIgnoreBot404($ignoreBot404)
+    public function setIgnoreBot404(boolean $ignoreBot404 = false)
     {
         $this->ignoreBot404 = $ignoreBot404;
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
     public function getIgnoreBot404()
     {
@@ -114,7 +121,8 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     * @param mixed $subject
+     * The subject of the message being sent.
+     * @var string $subject
      */
     public function setSubject($subject)
     {
@@ -122,7 +130,7 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getSubject()
     {
