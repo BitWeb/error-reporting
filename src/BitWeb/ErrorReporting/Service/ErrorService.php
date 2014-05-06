@@ -86,7 +86,7 @@ class ErrorService
 
     public function hasReceiverEmails()
     {
-        if ($this->configuration->getEmails() == null) {
+        if (count($this->configuration->getEmails()) == 0) {
             return false;
         }
         return true;
@@ -94,18 +94,12 @@ class ErrorService
 
     public function ignoreBot404()
     {
-        if ($this->configuration->getIgnoreBot404() !== null) {
-            return false;
-        }
-        return true;
+        return $this->configuration->getIgnoreBot404();
     }
 
     public function ignore404()
     {
-        if ($this->configuration->getIgnore404() !== null) {
-            return false;
-        }
-        return true;
+        return $this->configuration->getIgnore404();
     }
 
     public function isBotRequest()
