@@ -90,7 +90,7 @@ class Configuration extends AbstractConfiguration
      * Are 404 errors ignored?
      * @var boolean $ignore404
      */
-    public function setIgnore404(boolean $ignore404 = false)
+    public function setIgnore404($ignore404)
     {
         $this->ignore404 = $ignore404;
     }
@@ -107,7 +107,7 @@ class Configuration extends AbstractConfiguration
      * Are bot 404 errors ignored?
      * @var boolean $ignoreBot404
      */
-    public function setIgnoreBot404(boolean $ignoreBot404 = false)
+    public function setIgnoreBot404($ignoreBot404)
     {
         $this->ignoreBot404 = $ignoreBot404;
     }

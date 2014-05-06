@@ -63,6 +63,7 @@ class ErrorService
 
     public function endErrorHandling()
     {
+
         if (empty($this->errors)) {
             return; //No errors, do nothing
         }
@@ -127,7 +128,6 @@ class ErrorService
         }
         $ignorableExceptions = $this->configuration->getIgnorableExceptions();
         foreach ($this->errors as $error) {
-
             foreach ($ignorableExceptions as $ignorable) {
                 if (!($error instanceof $ignorable)) {
                     return false;
@@ -139,7 +139,7 @@ class ErrorService
 
     public function restoreDefaultErrorHandling()
     {
-        restore_error_handler();
+       return restore_error_handler();
     }
 
     public function getErrorReportMetaData()

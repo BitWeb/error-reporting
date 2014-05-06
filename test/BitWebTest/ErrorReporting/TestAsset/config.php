@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'emails' => ['kristjan.andresson@bitweb.ee'],
+    'emails' => [],
     'subject' => 'Errors',
-    'fromAddress' => 'test@bitweb.ee',
+    'fromAddress' => '',
     'botList' => [],
     'ignore404' => false,
     'ignoreBot404' => false,
