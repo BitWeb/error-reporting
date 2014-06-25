@@ -8,6 +8,7 @@
 namespace BitWeb\ErrorReporting\Service;
 
 use BitWeb\ErrorReporting\Error;
+use BitWeb\ErrorReporting\ErrorEventManager;
 use BitWeb\ErrorReporting\ErrorInfo;
 use BitWeb\ErrorReporting\ErrorMeta;
 use BitWeb\Stdlib\Ip;
@@ -17,6 +18,29 @@ use Zend\View\Resolver\TemplateMapResolver;
 
 class ErrorService
 {
+
+    /**
+     * @var ErrorEventManager
+     */
+    protected $eventManager;
+
+    protected $event;
+
+    /**
+     * @param \BitWeb\ErrorReporting\ErrorEventManager $eventManager
+     */
+    public function setEventManager($eventManager)
+    {
+        $this->eventManager = $eventManager;
+    }
+
+    /**
+     * @param mixed $event
+     */
+    public function setEvent($event)
+    {
+        $this->event = $event;
+    }
 
     protected $config = [
         'emails' => [],
@@ -191,12 +215,28 @@ class ErrorService
         ]));
         $renderedView = $renderer->render($viewModel);
 
-        $to = implode(',', $this->config['emails']);
+        $to = array();
+        $cc = array();
 
-        $headers = "From: " . $this->config['from_address'] . "\n";
-        $headers .= "MIME-Version: 1.0" . "\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\n";
+        foreach($this->config['emails'] as $index => $mail){
+            if($index == 0){
+                $to = array('email' => $mail, 'name' => '');
+            } else {
+                $cc[] = array('email' => $mail, 'name' => '');
+            }
+        }
 
-        mail($to, $this->config['subject'], $renderedView, $headers);
+        $params = array(
+            'to' => $to,
+            'cc' => $cc,
+            'from' => array(
+                'name' => '',
+                'email' => $this->config['from_address'],
+            ),
+            'subject' => $this->config['subject'],
+            'body' => $renderedView,
+        );
+
+        $this->eventManager->trigger($this->event, null, $params);
     }
 }
