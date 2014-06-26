@@ -7,8 +7,8 @@
  */
 namespace BitWeb\ErrorReporting\Service;
 
+use BitWeb\ErrorReporting\Configuration;
 use BitWeb\ErrorReporting\Error;
-use BitWeb\ErrorReporting\ErrorEventManager;
 use BitWeb\ErrorReporting\ErrorInfo;
 use BitWeb\ErrorReporting\ErrorMeta;
 use BitWeb\Stdlib\Ip;
@@ -18,6 +18,11 @@ use Zend\View\Resolver\TemplateMapResolver;
 
 class ErrorService
 {
+
+    /**
+     * @var Configuration
+     */
+    protected $configuration = null;
 
     /**
      * @var ErrorEventManager
@@ -42,31 +47,20 @@ class ErrorService
         $this->event = $event;
     }
 
-    protected $config = [
-        'emails' => [],
-        'subject' => 'Errors',
-        'from_address' => '',
-        'botList' => [],
-        'ignore404' => false,
-        'ignoreBot404' => false,
-        'ignorable_exceptions' => ['ErrorException'],
-    ];
 
     public $errors = [];
     protected $startTime = null;
 
     protected static $errorException;
 
-    public function __construct(array $config = [])
+    public function __construct(Configuration $configuration)
     {
-        if (count($config) > 0) {
-            $this->setConfig($config);
-        }
+        $this->setConfig($configuration);
     }
 
-    public function setConfig(array $config = [])
+    public function setConfig(Configuration $configuration)
     {
-        $this->config = $config;
+        $this->configuration = $configuration;
     }
 
     public function startErrorHandling($startTime = null)
@@ -93,6 +87,7 @@ class ErrorService
 
     public function endErrorHandling()
     {
+
         if (empty($this->errors)) {
             return; //No errors, do nothing
         }
@@ -115,10 +110,7 @@ class ErrorService
 
     public function hasReceiverEmails()
     {
-        if (!isset($this->config['emails'])) {
-            return false;
-        }
-        if (count($this->config['emails']) == 0) {
+        if (count($this->configuration->getEmails()) == 0) {
             return false;
         }
         return true;
@@ -126,24 +118,18 @@ class ErrorService
 
     public function ignoreBot404()
     {
-        if (isset($this->config['ignoreBot404']) && $this->config['ignoreBot404']) {
-            return false;
-        }
-        return true;
+        return $this->configuration->getIgnoreBot404();
     }
 
     public function ignore404()
     {
-        if (isset($this->config['ignore404']) && $this->config['ignore404']) {
-            return false;
-        }
-        return true;
+        return $this->configuration->getIgnore404();
     }
 
     public function isBotRequest()
     {
         $httpUserAgent = $_SERVER['HTTP_USER_AGENT'];
-        $botList = $this->config['bot_list'];
+        $botList = $this->configuration->getBotList();
 
         foreach ($botList as $bot) {
             if (stripos($httpUserAgent, $bot) !== false) {
@@ -155,12 +141,11 @@ class ErrorService
 
     protected function hasOnlyIgnorableExceptions()
     {
-        if (!isset($this->config['ignorable_exceptions']) or count($this->config['ignorable_exceptions']) == 0) {
+        if ($this->configuration->getIgnorableExceptions() == null) {
             return false;
         }
-        $ignorableExceptions = $this->config['ignorable_exceptions'];
+        $ignorableExceptions = $this->configuration->getIgnorableExceptions();
         foreach ($this->errors as $error) {
-
             foreach ($ignorableExceptions as $ignorable) {
                 if (!($error instanceof $ignorable)) {
                     return false;
@@ -172,7 +157,7 @@ class ErrorService
 
     public function restoreDefaultErrorHandling()
     {
-        restore_error_handler();
+        return restore_error_handler();
     }
 
     public function getErrorReportMetaData()
