@@ -135,6 +135,19 @@ class ErrorServiceTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testIsIgnorablePath()
+    {
+        $this->configuration->setIgnorablePaths([
+            'wp-admin',
+            'wp-login'
+        ]);
+        $service = new ErrorService($this->configuration);
+        $_SERVER['REQUEST_URI'] = '/not-ignorable';
+        $this->assertFalse($service->isIgnorablePath());
+        $_SERVER['REQUEST_URI'] = '/wp-login';
+        $this->assertTrue($service->isIgnorablePath());
+    }
+
     public function testRestoreDefaultErrorHandling()
     {
         $service = new ErrorService($this->configuration);

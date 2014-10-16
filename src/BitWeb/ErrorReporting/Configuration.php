@@ -1,8 +1,5 @@
 <?php
-
-
 namespace BitWeb\ErrorReporting;
-
 
 use BitWeb\Stdlib\AbstractConfiguration;
 
@@ -15,6 +12,7 @@ class Configuration extends AbstractConfiguration
     protected $ignore404 = false;
     protected $ignoreBot404 = false;
     protected $ignorableExceptions = array('ErrorException');
+    protected $ignorablePaths = array();
 
 
     /**
@@ -135,6 +133,21 @@ class Configuration extends AbstractConfiguration
     public function getSubject()
     {
         return $this->subject;
+    }
+
+    /**
+     * Paths to ignore.
+     * @var array $ignorablePaths
+     */
+    public function setIgnorablePaths(array $ignorablePaths) {
+        $this->ignorablePaths = $ignorablePaths;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIgnorablePaths() {
+        return $this->ignorablePaths;
     }
 
 } 
