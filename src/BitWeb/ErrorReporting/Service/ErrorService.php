@@ -160,9 +160,9 @@ class ErrorService
         return true;
     }
 
-    protected function isIgnorablePath()
+    public function isIgnorablePath()
     {
-        if ($this->configuration->getIgnorablePaths() == null) {
+        if ($this->configuration->getIgnorablePaths() == null || !isset($_SERVER['REQUEST_URI'])) {
             return false;
         }
         $ignorablePaths = array_map(function($path) {
@@ -170,9 +170,9 @@ class ErrorService
         }, $this->configuration->getIgnorablePaths());
 
         $pattern = '/(' . implode('|', $ignorablePaths) . ')+/i';
-        $path = $this->getErrorReportMetaData()->getMeta()->getServerData()['REQUEST_URI'];
+        $path = $_SERVER['REQUEST_URI'];
 
-        return preg_match($pattern, $path);
+        return (boolean) preg_match($pattern, $path);
     }
 
     public function restoreDefaultErrorHandling()

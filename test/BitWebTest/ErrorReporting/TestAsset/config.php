@@ -8,4 +8,5 @@ return [
     'ignore404' => false,
     'ignoreBot404' => false,
     'ignorableExceptions' => ['ErrorException'],
+    'ignorablePaths' => []
 ];
