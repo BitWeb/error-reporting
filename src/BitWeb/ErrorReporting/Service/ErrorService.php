@@ -9,6 +9,7 @@ namespace BitWeb\ErrorReporting\Service;
 
 use BitWeb\ErrorReporting\Configuration;
 use BitWeb\ErrorReporting\Error;
+use BitWeb\ErrorReporting\ErrorEventManager;
 use BitWeb\ErrorReporting\ErrorInfo;
 use BitWeb\ErrorReporting\ErrorMeta;
 use BitWeb\Stdlib\Ip;
@@ -103,6 +104,10 @@ class ErrorService
             return;
         }
 
+        if ($this->isIgnorablePath()) { //Ignore user defined paths
+            return;
+        }
+
         $this->composeAndSendErrorMail();
         $this->startTime = null;
         $this->errors = [];
@@ -153,6 +158,21 @@ class ErrorService
             }
         }
         return true;
+    }
+
+    public function isIgnorablePath()
+    {
+        if ($this->configuration->getIgnorablePaths() == null || !isset($_SERVER['REQUEST_URI'])) {
+            return false;
+        }
+        $ignorablePaths = array_map(function($path) {
+            return '(' . str_replace('/', '\/', $path) . ')';
+        }, $this->configuration->getIgnorablePaths());
+
+        $pattern = '/(' . implode('|', $ignorablePaths) . ')+/i';
+        $path = $_SERVER['REQUEST_URI'];
+
+        return (boolean) preg_match($pattern, $path);
     }
 
     public function restoreDefaultErrorHandling()

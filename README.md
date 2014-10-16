@@ -21,6 +21,12 @@ $errorService = new \BitWeb\ErrorReporting\Service\ErrorService(array(
         'Mail.RU_Bot',
         'YandexBot',
     ),
+    'ignorableExceptions' => array(
+        'ErrorException'
+    ),
+    'ignorablePaths' => array (
+        'paths/to/ignore'
+    )
 ));
 $errorService->startErrorHandling();
 ```
@@ -38,4 +44,5 @@ $errorService->endErrorHandling();
 | ignore404            | boolean | `false`                   | Are 404 errors ignored? |
 | ignoreBot404         | boolean | `false`                   | Are bot 404 errors ignored? |
 | botList              | array   | `array()`                 | Defines bots. |
-| ignorable_exceptions | array   | `array('ErrorException')` | Exceptions to ignore. |
+| ignorableExceptions  | array   | `array('ErrorException')` | Exceptions to ignore. |
+| ignorablePaths       | array   | `array()`                 | Paths to ignore. |
