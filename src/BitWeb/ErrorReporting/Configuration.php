@@ -5,7 +5,7 @@ use BitWeb\Stdlib\AbstractConfiguration;
 
 class Configuration extends AbstractConfiguration
 {
-    protected $errorReportingLevel = 'E_ALL';
+    protected $errorReportingLevel = E_ALL;
     protected $emails = array();
     protected $subject = 'Errors';
     protected $fromAddress = '';
@@ -17,14 +17,14 @@ class Configuration extends AbstractConfiguration
 
     /**
      * The level of error reporting.
-     * @var string $errorReportingLevel
+     * @var integer $errorReportingLevel
      */
     public function setErrorReportingLevel($errorReportingLevel) {
         $this->errorReportingLevel = $errorReportingLevel;
     }
 
     /**
-     * @return string
+     * @return integer
      */
     public function getErrorReportingLevel() {
         return $this->errorReportingLevel;
