@@ -39,7 +39,7 @@ $errorService->endErrorHandling();
 
 | Name                 | Type    | Default                   | Description |
 |----------------------|---------|---------------------------|-------------|
-| errorReportingLevel  | string  | 'E_ALL'                   | The level of error reporting. |
+| errorReportingLevel  | string  | `E_ALL`                   | The level of error reporting. |
 | subject              | string  | `Errors`                  | The subject of the message being sent. |
 | emails               | array   | `array()`                 | An array of emails the error report is sent to. |
 | from_address         | string  | `''`                      | Address where the messege is sent from. |
