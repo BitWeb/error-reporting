@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'errorReportingLevel' => 'E_ALL',
     'emails' => [],
     'subject' => 'Errors',
     'fromAddress' => '',

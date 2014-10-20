@@ -67,7 +67,7 @@ class ErrorService
     public function startErrorHandling($startTime = null)
     {
         $this->startTime = $startTime !== null ? $startTime : microtime(true);
-        set_error_handler([$this, 'addPhpError'], E_ALL);
+        set_error_handler([$this, 'addPhpError'], $this->configuration->getErrorReportingLevel());
         register_shutdown_function([$this, 'endErrorHandlingWithFatal']);
     }
 
