@@ -6,6 +6,7 @@ error-reporting
 Add this to your index.php file, right after autoloading.
 ```php
 $errorService = new \BitWeb\ErrorReporting\Service\ErrorService(array(
+    'errorReportingLevel' => E_ALL,
     'subject' => '[Errors][your-app-id-here]',
     'emails' => array (
         'you@domain.com'
@@ -38,6 +39,7 @@ $errorService->endErrorHandling();
 
 | Name                 | Type    | Default                   | Description |
 |----------------------|---------|---------------------------|-------------|
+| errorReportingLevel  | integer | E_ALL                     | The level of error reporting. |
 | subject              | string  | `Errors`                  | The subject of the message being sent. |
 | emails               | array   | `array()`                 | An array of emails the error report is sent to. |
 | from_address         | string  | `''`                      | Address where the messege is sent from. |
