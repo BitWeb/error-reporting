@@ -1,7 +1,7 @@
 {
     "name": "bitweb/error-reporting",
     "description": "BitWeb extension for sending errors to email.",
-    "license": "proprietary",
+    "license": "BSD-3-Clause",
     "homepage": "http://bitweb.ee/",
     "authors": [
         {
@@ -25,11 +25,34 @@
         "zendframework/zend-i18n": "~2.2"
     },
     "require-dev": {
-        "phpunit/PHPUnit": "3.7.*"
+        "phpunit/PHPUnit": "3.7.*",
+        "satooshi/php-coveralls": "dev-master",
+        "sebastianbergmann/phpcov": "1.1.0"
     },
     "autoload": {
         "psr-0": {
             "": ["src/", "test/"]
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "sebastianbergmann/phpcov",
+                "version": "1.1.0",
+                "dist": {
+                    "url": "https://github.com/sebastianbergmann/phpcov/archive/1.1.0.zip",
+                    "type": "zip"
+                },
+                "source": {
+                    "url": "https://github.com/sebastianbergmann/phpcov.git",
+                    "type": "git",
+                    "reference": "1.1.0"
+                },
+                "bin": [
+                    "phpcov.php"
+                ]
+            }
+        }
+    ]
 }
