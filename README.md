@@ -1,6 +1,7 @@
 error-reporting
 ===============
-
+[![Build Status](https://travis-ci.org/BitWeb/error-reporting.svg?branch=master)](https://travis-ci.org/BitWeb/error-reporting?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/BitWeb/error-reporting.svg)](https://coveralls.io/r/BitWeb/error-reporting?branch=master)
 ##Usage:
 
 Add this to your index.php file, right after autoloading.
