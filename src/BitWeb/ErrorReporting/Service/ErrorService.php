@@ -56,7 +56,7 @@ class ErrorService
 
     public function __construct(Configuration $configuration)
     {
-            $this->setConfig($configuration);
+        $this->setConfig($configuration);
     }
 
     public function setConfig(Configuration $configuration)
@@ -177,7 +177,7 @@ class ErrorService
 
     public function restoreDefaultErrorHandling()
     {
-       return restore_error_handler();
+        return restore_error_handler();
     }
 
     public function getErrorReportMetaData()
@@ -223,7 +223,7 @@ class ErrorService
         $to = array();
         $cc = array();
 
-        foreach($this->config['emails'] as $index => $mail){
+        foreach($this->configuration->getEmails() as $index => $mail){
             if($index == 0){
                 $to = array('email' => $mail, 'name' => '');
             } else {
@@ -236,9 +236,9 @@ class ErrorService
             'cc' => $cc,
             'from' => array(
                 'name' => '',
-                'email' => $this->config['from_address'],
+                'email' => $this->configuration->getFromAddress(),
             ),
-            'subject' => $this->config['subject'],
+            'subject' => $this->configuration->getSubject(),
             'body' => $renderedView,
         );
 
