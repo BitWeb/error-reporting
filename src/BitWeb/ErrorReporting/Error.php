@@ -7,21 +7,21 @@ class Error
     /**
      * @var ErrorInfo[]
      */
-    protected $errors = array();
+    protected $errors = [];
 
     /**
      * @var ErrorMeta
      */
     protected $meta;
 
-    function __construct($errors, $meta)
+    public function __construct($errors, $meta)
     {
         $this->errors = $errors;
         $this->meta = $meta;
     }
 
     /**
-     * @param ErrorInfo[] $errors
+     * @param  ErrorInfo[] $errors
      * @return self
      */
     public function setErrors(array $errors)
@@ -31,8 +31,8 @@ class Error
     }
 
     /**
-     * @param ErrorInfo $errorInfo
-     * @return $this
+     * @param  ErrorInfo $errorInfo
+     * @return self
      */
     public function addError(ErrorInfo $errorInfo)
     {
@@ -49,7 +49,7 @@ class Error
     }
 
     /**
-     * @param ErrorMeta $meta
+     * @param  ErrorMeta $meta
      * @return self
      */
     public function setMeta(ErrorMeta $meta)
@@ -65,4 +65,4 @@ class Error
     {
         return $this->meta;
     }
-} 
+}

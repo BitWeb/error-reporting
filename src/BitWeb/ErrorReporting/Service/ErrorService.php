@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: priit
- * Date: 3/5/14
- * Time: 10:05 PM
- */
+
 namespace BitWeb\ErrorReporting\Service;
 
 use BitWeb\ErrorReporting\Configuration;
@@ -19,7 +14,6 @@ use Zend\View\Resolver\TemplateMapResolver;
 
 class ErrorService
 {
-
     /**
      * @var Configuration
      */
@@ -31,6 +25,16 @@ class ErrorService
     protected $eventManager;
 
     protected $event;
+
+    public $errors = [];
+    protected $startTime = null;
+
+    protected static $errorException;
+
+    public function __construct(Configuration $configuration)
+    {
+        $this->setConfig($configuration);
+    }
 
     /**
      * @param \BitWeb\ErrorReporting\ErrorEventManager $eventManager
@@ -46,17 +50,6 @@ class ErrorService
     public function setEvent($event)
     {
         $this->event = $event;
-    }
-
-
-    public $errors = [];
-    protected $startTime = null;
-
-    protected static $errorException;
-
-    public function __construct(Configuration $configuration)
-    {
-        $this->setConfig($configuration);
     }
 
     public function setConfig(Configuration $configuration)
@@ -141,6 +134,7 @@ class ErrorService
                 return true;
             }
         }
+
         return false;
     }
 
@@ -149,14 +143,21 @@ class ErrorService
         if ($this->configuration->getIgnorableExceptions() == null) {
             return false;
         }
+
         $ignorableExceptions = $this->configuration->getIgnorableExceptions();
         foreach ($this->errors as $error) {
+            $exceptionIgnored = false;
             foreach ($ignorableExceptions as $ignorable) {
-                if (!($error instanceof $ignorable)) {
-                    return false;
+                if ($error instanceof $ignorable) {
+                    $exceptionIgnored = true;
                 }
             }
+
+            if (!$exceptionIgnored) {
+                return false;
+            }
         }
+
         return true;
     }
 
@@ -165,14 +166,14 @@ class ErrorService
         if ($this->configuration->getIgnorablePaths() == null || !isset($_SERVER['REQUEST_URI'])) {
             return false;
         }
-        $ignorablePaths = array_map(function($path) {
+        $ignorablePaths = array_map(function ($path) {
             return '(' . str_replace('/', '\/', $path) . ')';
         }, $this->configuration->getIgnorablePaths());
 
         $pattern = '/(' . implode('|', $ignorablePaths) . ')+/i';
         $path = $_SERVER['REQUEST_URI'];
 
-        return (boolean) preg_match($pattern, $path);
+        return (boolean)preg_match($pattern, $path);
     }
 
     public function restoreDefaultErrorHandling()
@@ -220,27 +221,27 @@ class ErrorService
         ]));
         $renderedView = $renderer->render($viewModel);
 
-        $to = array();
-        $cc = array();
+        $to = [];
+        $cc = [];
 
-        foreach($this->configuration->getEmails() as $index => $mail){
-            if($index == 0){
-                $to = array('email' => $mail, 'name' => '');
+        foreach ($this->configuration->getEmails() as $index => $mail) {
+            if ($index == 0) {
+                $to = ['email' => $mail, 'name' => ''];
             } else {
-                $cc[] = array('email' => $mail, 'name' => '');
+                $cc[] = ['email' => $mail, 'name' => ''];
             }
         }
 
-        $params = array(
+        $params = [
             'to' => $to,
             'cc' => $cc,
-            'from' => array(
+            'from' => [
                 'name' => '',
                 'email' => $this->configuration->getFromAddress(),
-            ),
+            ],
             'subject' => $this->configuration->getSubject(),
             'body' => $renderedView,
-        );
+        ];
 
         $this->eventManager->trigger($this->event, null, $params);
     }
