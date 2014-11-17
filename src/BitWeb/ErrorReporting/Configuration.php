@@ -6,32 +6,36 @@ use BitWeb\Stdlib\AbstractConfiguration;
 class Configuration extends AbstractConfiguration
 {
     protected $errorReportingLevel = E_ALL;
-    protected $emails = array();
+    protected $emails = [];
     protected $subject = 'Errors';
     protected $fromAddress = '';
-    protected $botList = array();
+    protected $botList = [];
     protected $ignore404 = false;
     protected $ignoreBot404 = false;
-    protected $ignorableExceptions = array('ErrorException');
-    protected $ignorablePaths = array();
+    protected $ignorableExceptions = ['ErrorException'];
+    protected $ignorablePaths = [];
 
     /**
      * The level of error reporting.
+     *
      * @var integer $errorReportingLevel
      */
-    public function setErrorReportingLevel($errorReportingLevel) {
+    public function setErrorReportingLevel($errorReportingLevel)
+    {
         $this->errorReportingLevel = $errorReportingLevel;
     }
 
     /**
      * @return integer
      */
-    public function getErrorReportingLevel() {
+    public function getErrorReportingLevel()
+    {
         return $this->errorReportingLevel;
     }
 
     /**
      * Defines bots.
+     *
      * @var array $botList
      */
     public function setBotList(array $botList)
@@ -40,7 +44,6 @@ class Configuration extends AbstractConfiguration
     }
 
     /**
-     *
      * @return array
      */
     public function getBotList()
@@ -50,6 +53,7 @@ class Configuration extends AbstractConfiguration
 
     /**
      * An array of emails the error report is sent to.
+     *
      * @var array $emails
      */
     public function setEmails(array $emails)
@@ -67,6 +71,7 @@ class Configuration extends AbstractConfiguration
 
     /**
      * Address where the message is sent from.
+     *
      * @var String $fromAddress
      */
     public function setFromAddress($fromAddress)
@@ -84,6 +89,7 @@ class Configuration extends AbstractConfiguration
 
     /**
      * Exceptions to ignore.
+     *
      * @var array $ignorableExceptions
      */
     public function setIgnorableExceptions(array $ignorableExceptions)
@@ -101,6 +107,7 @@ class Configuration extends AbstractConfiguration
 
     /**
      * Are 404 errors ignored?
+     *
      * @var boolean $ignore404
      */
     public function setIgnore404($ignore404)
@@ -118,6 +125,7 @@ class Configuration extends AbstractConfiguration
 
     /**
      * Are bot 404 errors ignored?
+     *
      * @var boolean $ignoreBot404
      */
     public function setIgnoreBot404($ignoreBot404)
@@ -135,6 +143,7 @@ class Configuration extends AbstractConfiguration
 
     /**
      * The subject of the message being sent.
+     *
      * @var string $subject
      */
     public function setSubject($subject)
@@ -152,17 +161,19 @@ class Configuration extends AbstractConfiguration
 
     /**
      * Paths to ignore.
+     *
      * @var array $ignorablePaths
      */
-    public function setIgnorablePaths(array $ignorablePaths) {
+    public function setIgnorablePaths(array $ignorablePaths)
+    {
         $this->ignorablePaths = $ignorablePaths;
     }
 
     /**
      * @return array
      */
-    public function getIgnorablePaths() {
+    public function getIgnorablePaths()
+    {
         return $this->ignorablePaths;
     }
-
-} 
+}

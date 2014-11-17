@@ -6,6 +6,8 @@ namespace BitWebTest\ErrorReporting\Service;
 use BitWeb\ErrorReporting\Configuration;
 use BitWeb\ErrorReporting\Error;
 use BitWeb\ErrorReporting\Service\ErrorService;
+use BitWebTest\ErrorReporting\TestAsset\AnotherTestException;
+use BitWebTest\ErrorReporting\TestAsset\TestException;
 
 class ErrorServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -84,7 +86,7 @@ class ErrorServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testEndErrorHandlingWithFatal()
     {
-//        $serviceMock = $this->getMock(ErrorService::class, array(), array($this->configuration));
+//        $serviceMock = $this->getMock(ErrorService::class, [], [$this->configuration]);
 //        $serviceMock->expects($this->any())->method('endErrorHandling')->will($this->returnValue(true));
 //        $serviceMock->startErrorHandling();
 //        trigger_error("Cannot divide by zero", E_ALL);
@@ -95,12 +97,12 @@ class ErrorServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testEndErrorHandling()
     {
-//        $this->configuration->setEmails(array('kristjan.andresson@bitweb.ee'));
+//        $this->configuration->setEmails(['kristjan.andresson@bitweb.ee']);
 //        $service = new ErrorService($this->configuration);
 //        $service->startErrorHandling();
 //        trigger_error("Cannot divide by zero", E_USER_ERROR);
 //        $service->endErrorHandling();
-//        $this->assertEquals(array(), $service->errors);
+//        $this->assertEquals([], $service->errors);
 //        $this->assertNull(\PHPUnit_Framework_Assert::readAttribute($service, 'startTime'));
 
     }
@@ -122,17 +124,43 @@ class ErrorServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($service->isBotRequest());
     }
 
-    public function testHasOnlyIgnorableExceptions()
+    public function testHasOnlyIgnorableExceptionsWithEmptyConfig()
     {
         $service = new ErrorService($this->configuration);
         $method = self::getMethod(ErrorService::class, 'hasOnlyIgnorableExceptions');
-        $this->assertTrue($method->invokeArgs($service, []));
-        $this->configuration->setIgnorableExceptions(array('TestException'));
-        $service = new ErrorService($this->configuration);
-        $service->startErrorHandling();
-        trigger_error("Fatal error", E_USER_NOTICE);
-        $this->assertFalse($method->invokeArgs($service, []));
 
+        $this->assertTrue($method->invokeArgs($service, []));
+    }
+
+    public function testHasOnlyIgnorableExceptionsReturnsTrue()
+    {
+        $this->configuration->setIgnorableExceptions([TestException::class, AnotherTestException::class]);
+
+        $service = new ErrorService($this->configuration);
+        $method = self::getMethod(ErrorService::class, 'hasOnlyIgnorableExceptions');
+
+        $service->startErrorHandling();
+        $service->errors = [
+            new AnotherTestException()
+        ];
+
+        $this->assertTrue($method->invokeArgs($service, []));
+    }
+
+    public function testHasOnlyIgnorableExceptionsReturnsFalse()
+    {
+        $this->configuration->setIgnorableExceptions([TestException::class, AnotherTestException::class]);
+
+        $service = new ErrorService($this->configuration);
+        $method = self::getMethod(ErrorService::class, 'hasOnlyIgnorableExceptions');
+
+        $service->startErrorHandling();
+        $service->errors = [
+            new AnotherTestException(),
+            new \InvalidArgumentException()
+        ];
+
+        $this->assertFalse($method->invokeArgs($service, []));
     }
 
     public function testIsIgnorablePath()
@@ -152,7 +180,5 @@ class ErrorServiceTest extends \PHPUnit_Framework_TestCase
     {
         $service = new ErrorService($this->configuration);
         $this->assertTrue($service->restoreDefaultErrorHandling());
-
     }
-
 }

@@ -56,7 +56,7 @@ class ErrorMeta
     protected $requestDuration;
 
     /**
-     * @param array $getData
+     * @param  array $getData
      * @return self
      */
     public function setGetData(array $getData)
@@ -74,7 +74,7 @@ class ErrorMeta
     }
 
     /**
-     * @param string $ip
+     * @param  string $ip
      * @return self
      */
     public function setIp($ip)
@@ -92,7 +92,7 @@ class ErrorMeta
     }
 
     /**
-     * @param array $postData
+     * @param  array $postData
      * @return self
      */
     public function setPostData(array $postData)
@@ -110,7 +110,7 @@ class ErrorMeta
     }
 
     /**
-     * @param string $referrer
+     * @param  string $referrer
      * @return self
      */
     public function setReferrer($referrer)
@@ -128,7 +128,7 @@ class ErrorMeta
     }
 
     /**
-     * @param float $requestDuration
+     * @param  float $requestDuration
      * @return self
      */
     public function setRequestDuration($requestDuration)
@@ -146,7 +146,7 @@ class ErrorMeta
     }
 
     /**
-     * @param \DateTime $requestTime
+     * @param  \DateTime $requestTime
      * @return self
      */
     public function setRequestTime(\DateTime $requestTime)
@@ -164,7 +164,7 @@ class ErrorMeta
     }
 
     /**
-     * @param array $serverData
+     * @param  array $serverData
      * @return self
      */
     public function setServerData(array $serverData)
@@ -182,7 +182,7 @@ class ErrorMeta
     }
 
     /**
-     * @param array $sessionData
+     * @param  array $sessionData
      * @return self
      */
     public function setSessionData(array $sessionData = null)
@@ -200,7 +200,7 @@ class ErrorMeta
     }
 
     /**
-     * @param string $url
+     * @param  string $url
      * @return self
      */
     public function setUrl($url)
@@ -218,7 +218,7 @@ class ErrorMeta
     }
 
     /**
-     * @param string $userAgent
+     * @param  string $userAgent
      * @return self
      */
     public function setUserAgent($userAgent)
@@ -234,4 +234,4 @@ class ErrorMeta
     {
         return $this->userAgent;
     }
-} 
+}

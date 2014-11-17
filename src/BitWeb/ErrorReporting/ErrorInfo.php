@@ -2,7 +2,6 @@
 
 namespace BitWeb\ErrorReporting;
 
-
 class ErrorInfo
 {
     /**
@@ -25,7 +24,7 @@ class ErrorInfo
      */
     protected $severity;
 
-    function __construct($class, $title, $tracking, $severity = null)
+    public function __construct($class, $title, $tracking, $severity = null)
     {
         $this->class = $class;
         $this->severity = $severity;
@@ -34,7 +33,7 @@ class ErrorInfo
     }
 
     /**
-     * @param string $class
+     * @param  string $class
      * @return self
      */
     public function setClass($class)
@@ -52,7 +51,7 @@ class ErrorInfo
     }
 
     /**
-     * @param string $severity
+     * @param  string $severity
      * @return self
      */
     public function setSeverity($severity)
@@ -70,7 +69,7 @@ class ErrorInfo
     }
 
     /**
-     * @param string $title
+     * @param  string $title
      * @return self
      */
     public function setTitle($title)
@@ -88,7 +87,7 @@ class ErrorInfo
     }
 
     /**
-     * @param string $tracking
+     * @param  string $tracking
      * @return self
      */
     public function setTracking($tracking)
@@ -104,4 +103,4 @@ class ErrorInfo
     {
         return $this->tracking;
     }
-} 
+}
