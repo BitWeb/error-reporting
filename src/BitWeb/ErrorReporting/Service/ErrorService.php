@@ -126,7 +126,7 @@ class ErrorService
 
     public function isBotRequest()
     {
-        $httpUserAgent = $_SERVER['HTTP_USER_AGENT'];
+        $httpUserAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
         $botList = $this->configuration->getBotList();
 
         foreach ($botList as $bot) {
