@@ -254,7 +254,7 @@ class ErrorService
     {
         if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
             $prefix = (array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
-            $domain = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            $domain = $_SERVER['HTTP_HOST'];
         } else {
             $prefix = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on') ? 'https://' : 'http://';
             $domain = $_SERVER['SERVER_NAME'];

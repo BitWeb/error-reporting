@@ -215,7 +215,8 @@ class ErrorServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUrlWithXForwardedFor()
     {
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = 'bitweb.ee';
+        $_SERVER['HTTP_HOST'] = 'bitweb.ee';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.1';
         $_SERVER['SERVER_NAME'] = 'localhost';
         $_SERVER['REQUEST_URI'] = '/error-reporting';
 
