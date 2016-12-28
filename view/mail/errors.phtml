@@ -71,6 +71,12 @@ $meta = $error->getMeta();
                     <?php echo $meta->getIp(); ?>
                 </td>
             </tr>
+            <tr>
+                <td style="white-space:nowrap;padding-right:5px;font-weight:bold;text-align:right;">PHP:</td>
+                <td>
+                    <?php echo $meta->getPhpVersion(); ?>
+                </td>
+            </tr>
         </table>
         <table style="margin:10px;">
             <?php foreach ($error->getErrors() as $errorInfo): /** @var $errorInfo \BitWeb\ErrorReporting\ErrorInfo */ ?>

@@ -56,6 +56,11 @@ class ErrorMeta
     protected $requestDuration;
 
     /**
+     * @var string
+     */
+    protected $phpVersion;
+
+    /**
      * @param  array $getData
      * @return self
      */
@@ -233,5 +238,21 @@ class ErrorMeta
     public function getUserAgent()
     {
         return $this->userAgent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhpVersion()
+    {
+        return $this->phpVersion;
+    }
+
+    /**
+     * @param string $phpVersion
+     */
+    public function setPhpVersion($phpVersion)
+    {
+        $this->phpVersion = $phpVersion;
     }
 }
