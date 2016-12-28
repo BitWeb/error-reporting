@@ -205,6 +205,7 @@ class ErrorService
         $meta->setReferrer((isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : null);
         $meta->setRequestTime(new \DateTime());
         $meta->setRequestDuration(microtime(true) - $this->startTime);
+        $meta->setPhpVersion(PHP_VERSION);
 
         return new Error($errors, $meta);
     }

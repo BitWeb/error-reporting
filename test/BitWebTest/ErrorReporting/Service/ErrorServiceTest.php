@@ -81,7 +81,9 @@ class ErrorServiceTest extends \PHPUnit_Framework_TestCase
         $service = new ErrorService($this->configuration);
         $service->startErrorHandling();
         trigger_error("Cannot divide by zero", E_USER_ERROR);
-        $this->assertInstanceOf(Error::class, $service->getErrorReportMetaData());
+        $error = $service->getErrorReportMetaData();
+        $this->assertInstanceOf(Error::class, $error);
+        $this->assertEquals(PHP_VERSION, $error->getMeta()->getPhpVersion());
     }
 
     public function testEndErrorHandlingWithFatal()
