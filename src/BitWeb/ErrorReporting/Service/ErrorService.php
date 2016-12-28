@@ -197,7 +197,7 @@ class ErrorService
         $meta = new ErrorMeta();
         $meta->setIp(Ip::getClientIp());
         $meta->setUserAgent((isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : null);
-        $meta->setUrl(((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
+        $meta->setUrl($this->getUrl());
         $meta->setPostData($_POST);
         $meta->setGetData($_GET);
         $meta->setSessionData(isset($_SESSION) ? $_SESSION : null);
@@ -244,5 +244,21 @@ class ErrorService
         ];
 
         $this->eventManager->trigger($this->event, null, $params);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+            $prefix = (array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
+            $domain = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $prefix = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on') ? 'https://' : 'http://';
+            $domain = $_SERVER['SERVER_NAME'];
+        }
+
+        return $prefix . $domain . $_SERVER['REQUEST_URI'];
     }
 }

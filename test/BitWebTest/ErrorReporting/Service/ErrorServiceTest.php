@@ -181,4 +181,43 @@ class ErrorServiceTest extends \PHPUnit_Framework_TestCase
         $service = new ErrorService($this->configuration);
         $this->assertTrue($service->restoreDefaultErrorHandling());
     }
+
+    public function testGetUrlWithHttps()
+    {
+        $_SERVER['HTTPS'] = 'on';
+        $_SERVER['SERVER_NAME'] = 'bitweb.ee';
+        $_SERVER['REQUEST_URI'] = '/error-reporting';
+
+        $service = new ErrorService($this->configuration);
+        $this->assertEquals('https://bitweb.ee/error-reporting', $service->getUrl());
+    }
+
+    public function testGetUrlWithHttpsNotOn()
+    {
+        $_SERVER['HTTPS'] = 'off';
+        $_SERVER['SERVER_NAME'] = 'bitweb.ee';
+        $_SERVER['REQUEST_URI'] = '/error-reporting';
+
+        $service = new ErrorService($this->configuration);
+        $this->assertEquals('http://bitweb.ee/error-reporting', $service->getUrl());
+    }
+
+    public function testGetUrlWithHttp()
+    {
+        $_SERVER['SERVER_NAME'] = 'bitweb.ee';
+        $_SERVER['REQUEST_URI'] = '/error-reporting';
+
+        $service = new ErrorService($this->configuration);
+        $this->assertEquals('http://bitweb.ee/error-reporting', $service->getUrl());
+    }
+
+    public function testGetUrlWithXForwardedFor()
+    {
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = 'bitweb.ee';
+        $_SERVER['SERVER_NAME'] = 'localhost';
+        $_SERVER['REQUEST_URI'] = '/error-reporting';
+
+        $service = new ErrorService($this->configuration);
+        $this->assertEquals('http://bitweb.ee/error-reporting', $service->getUrl());
+    }
 }
